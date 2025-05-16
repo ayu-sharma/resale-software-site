@@ -2,8 +2,17 @@
 import { motion } from 'framer-motion';
 import { ArrowRight, ArrowUpRight, Check } from 'lucide-react';
 import Button from './ui/button';
+import { useState, useEffect } from 'react';
 
 export default function Hero({ darkMode = false }) {
+  // State for client-side animations
+  const [isClient, setIsClient] = useState(false);
+
+  // Run animations only after hydration is complete
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
   // Animation variants
   const fadeInUp = {
     hidden: { opacity: 0, y: 40 },
@@ -27,25 +36,35 @@ export default function Hero({ darkMode = false }) {
     "Maximize ROI"
   ];
 
+  // Predefined positions for background elements to avoid hydration mismatch
+  const bgElements = [
+    { top: "15%", left: "10%", width: "30vw", height: "40vh", x: [-10, 10], y: [-5, 15] },
+    { top: "60%", left: "5%", width: "25vw", height: "30vh", x: [10, -10], y: [10, -5] },
+    { top: "20%", left: "70%", width: "35vw", height: "25vh", x: [-15, 5], y: [5, -15] },
+    { top: "65%", left: "60%", width: "40vw", height: "35vh", x: [5, -5], y: [-10, 5] },
+    { top: "40%", left: "40%", width: "20vw", height: "45vh", x: [-5, 15], y: [15, -10] },
+    { top: "75%", left: "85%", width: "15vw", height: "20vh", x: [10, -15], y: [-5, 10] },
+  ];
+
   return (
     <section className={`relative overflow-hidden py-20 lg:py-28 ${darkMode ? 'bg-gray-900' : 'bg-gradient-to-b from-teal-50 to-cyan-100'}`}>
-      {/* Animated background elements */}
+      {/* Animated background elements - only animate on client side */}
       <div className="absolute inset-0 z-0">
-        {[...Array(6)].map((_, i) => (
+        {bgElements.map((elem, i) => (
           <motion.div
             key={i}
             className={`absolute rounded-full ${darkMode ? 'bg-teal-900/20' : 'bg-teal-500/10'} blur-3xl`}
             style={{
-              top: `${Math.random() * 100}%`,
-              left: `${Math.random() * 100}%`,
-              width: `${Math.random() * 40 + 10}vw`,
-              height: `${Math.random() * 40 + 10}vh`,
+              top: elem.top,
+              left: elem.left,
+              width: elem.width,
+              height: elem.height,
             }}
-            animate={{
-              x: [0, Math.random() * 50 - 25],
-              y: [0, Math.random() * 50 - 25],
+            animate={isClient ? {
+              x: elem.x,
+              y: elem.y,
               opacity: [0.4, 0.6, 0.4],
-            }}
+            } : {}}
             transition={{
               duration: 15 + i * 2,
               repeat: Infinity,

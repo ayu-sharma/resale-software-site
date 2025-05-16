@@ -47,8 +47,8 @@ export default function Footer({ darkMode = false }) {
   // Contact information
   const contactInfo = [
     { Icon: Mail, text: 'contact@softsell.com' },
-    { Icon: Phone, text: '(555) 123-4567' },
-    { Icon: MapPin, text: 'San Francisco, CA' },
+    { Icon: Phone, text: '+91 98050 12345' },
+    { Icon: MapPin, text: 'Mall Road, Shimla, Himachal Pradesh 171001, India' },
   ];
 
   return (
