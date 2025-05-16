@@ -1,6 +1,6 @@
 "use client"
 import { motion } from 'framer-motion';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Button from './ui/button';
 
 export default function ContactForm({ darkMode = false }) {
@@ -14,6 +14,12 @@ export default function ContactForm({ darkMode = false }) {
   const [formErrors, setFormErrors] = useState({});
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [formFocus, setFormFocus] = useState({});
+  const [isClient, setIsClient] = useState(false);
+
+  // Set client-side rendering flag after hydration
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   // Handle form input changes
   const handleInputChange = (e) => {
@@ -126,26 +132,36 @@ export default function ContactForm({ darkMode = false }) {
       }
     }
   };
+  
+  // Predefined positions for background elements
+  const bgElements = [
+    { top: "10%", left: "15%", width: "35vw", height: "30vh", x: [-15, 5], y: [10, -15] },
+    { top: "70%", left: "8%", width: "28vw", height: "25vh", x: [5, -10], y: [-5, 10] },
+    { top: "25%", left: "75%", width: "32vw", height: "35vh", x: [-5, 15], y: [5, -10] },
+    { top: "65%", left: "65%", width: "25vw", height: "30vh", x: [15, -5], y: [-15, 5] },
+    { top: "45%", left: "35%", width: "22vw", height: "20vh", x: [-10, 5], y: [5, -5] },
+    { top: "85%", left: "80%", width: "18vw", height: "28vh", x: [5, -15], y: [-5, 15] },
+  ];
 
   return (
     <section id="contact" className={`relative overflow-hidden py-20 ${darkMode ? 'bg-gray-900' : 'bg-gradient-to-b from-teal-50 to-cyan-100'}`}>
-      {/* Animated background elements */}
+      {/* Animated background elements - only animate on client side */}
       <div className="absolute inset-0 z-0">
-        {[...Array(6)].map((_, i) => (
+        {bgElements.map((elem, i) => (
           <motion.div
             key={i}
             className={`absolute rounded-full ${darkMode ? 'bg-teal-900/20' : 'bg-teal-500/10'} blur-3xl`}
             style={{
-              top: `${Math.random() * 100}%`,
-              left: `${Math.random() * 100}%`,
-              width: `${Math.random() * 40 + 10}vw`,
-              height: `${Math.random() * 40 + 10}vh`,
+              top: elem.top,
+              left: elem.left,
+              width: elem.width,
+              height: elem.height,
             }}
-            animate={{
-              x: [0, Math.random() * 50 - 25],
-              y: [0, Math.random() * 50 - 25],
+            animate={isClient ? {
+              x: elem.x,
+              y: elem.y,
               opacity: [0.4, 0.6, 0.4],
-            }}
+            } : {}}
             transition={{
               duration: 15 + i * 2,
               repeat: Infinity,
